@@ -7,8 +7,8 @@ export const createPost = async (req, res) => {
     const user = await User.findById(userId);
     const newPost = new Post({
       userId,
-      firstName: user.firstname,
-      lastName: user.lastname,
+      firstName: user.firstName,
+      lastName: user.lastName,
       location: user.location,
       description,
       picturePath,
@@ -57,12 +57,21 @@ export const likePost = async (req, res) => {
     } else {
       post.likes.set(userId, true);
     }
-    const updatedPost = await post.findByIdAndUpdate(
+    const updatedPost = await Post.findByIdAndUpdate(
       id,
       { likes: post.likes },
       { new: true }
     );
     res.status(200).json(updatedPost);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
+export const getAllPosts = async (req, res) => {
+  try {
+    const posts = await Post.find();
+    res.status(200).json(posts);
   } catch (error) {
     res.status(404).json({ error: error.message });
   }
