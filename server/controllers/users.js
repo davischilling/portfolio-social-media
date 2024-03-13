@@ -24,7 +24,7 @@ export const getUserFriends = async (req, res) => {
       return formattedFriend;
     });
 
-    res.status(200).json({ friends: formattedFriends });
+    res.status(200).json(formattedFriends);
   } catch(error) {
     res.status(404).json({ error: error.message })
   }
@@ -36,23 +36,28 @@ export const addRemoveFriend = async (req, res) => {
     const user = await User.findById(id);
     const friend = await User.findById(friendId);
 
-    if (!user.friends.includes(friendId)) {
-      await user.updateOne({ $push: { friends: friendId } });
-      await friend.updateOne({ $push: { friends: id } });
+    if (user.friends.includes(friendId)) {
+      user.friends = user.friends.filter((id) => id !== friendId);
+      friend.friends = friend.friends.filter((id) => id !== id);
     } else {
-      await user.updateOne({ $pull: { friends: friendId } });
-      await friend.updateOne({ $pull: { friends: id } });
+      user.friends.push(friendId);
+      friend.friends.push(id);
     }
+
+    await user.save();
+    await friend.save();
 
     const friends = await Promise.all(
       user.friends.map((id) => User.findById(id))
     );
     const formattedFriends = friends.map((friend) => {
-      const {email, password, username, friends, ViewedProfile, Impressions, ...formattedFriend} = friend;
-      return formattedFriend;
+      // const {email, password, username, friends, ViewedProfile, Impressions, ...formattedFriend} = friend;
+      // return formattedFriend;
+      return friend;
     });
 
-    res.status(200).json({ friends: formattedFriends });
+    console.log(formattedFriends);
+    res.status(200).json(formattedFriends);
   } catch(error) {
     res.status(404).json({ error: error.message })
   }

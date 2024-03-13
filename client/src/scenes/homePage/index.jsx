@@ -1,12 +1,12 @@
 import { Box, useMediaQuery } from '@mui/material'
 import Navbar from 'components/Navbar'
-import UserWidget from 'components/widgets/UserWidget'
+import { UserWidget, MyPostWidget, PostsWidget } from 'components/widgets'
+import { FriendListWidget, AdvertisementWidget } from 'components/widgets'
 import { useSelector } from 'react-redux'
 
 const HomePage = () => {
   const isNonMobileScreen = useMediaQuery('(min-width: 1000px)')
   const { _id, picturePath } = useSelector((state) => state.user)
-  console.log(picturePath)
   return (
     <Box>
       <Navbar />
@@ -23,8 +23,17 @@ const HomePage = () => {
         <Box
           flexBasis={isNonMobileScreen ? '42%' : undefined}
           mt={isNonMobileScreen ? undefined : '2rem'}
-        ></Box>
-        {isNonMobileScreen && <Box flexBasis='26%'></Box>}
+        >
+          <MyPostWidget picturePath={picturePath} />
+          <PostsWidget userId={_id} />
+        </Box>
+        {isNonMobileScreen && (
+          <Box flexBasis='26%'>
+            <AdvertisementWidget />
+            <Box m='2rem 0' />
+            <FriendListWidget userId={_id} />
+          </Box>
+        )}
       </Box>
     </Box>
   )

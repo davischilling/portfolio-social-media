@@ -142,4 +142,4 @@ const UserWidget = ({ userId, picturePath }) => {
   )
 }
 
-export default UserWidget
+export { UserWidget }

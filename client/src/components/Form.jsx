@@ -101,7 +101,7 @@ const Form = () => {
         setPageType('login')
       }
     } catch (error) {
-      console.log('>>>>>>>>>', error)
+      console.log(error)
     }
   }
 
